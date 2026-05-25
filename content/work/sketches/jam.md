@@ -1,12 +1,12 @@
 ---
-weight: 1
+weight: 3
 images:
-- https://source.unsplash.com/random?galaxy&5568
-title: galaxy 1
+- https://tangerrini.github.io/sketches/sketch_210517b_masking_JAM/index.html
+title: jam
 date: 2022-07-23
 tags:
-- archive # all posts
-- space
+  - coding
+  - p5js
 ---
 
 ## Markdown
