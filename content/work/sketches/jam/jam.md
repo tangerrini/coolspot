@@ -1,12 +1,12 @@
 ---
 weight: 3
-images:
-- https://tangerrini.github.io/sketches/sketch_210517b_masking_JAM/index.html
-title: jam
-date: 2022-07-23
+title: "Jam"
+date: 2026-05-25
 tags:
-  - coding
   - p5js
+  - coding
+image: "cover.png"
+externalLink: "- https://tangerrini.github.io/sketches/sketch_210517b_masking_JAM/index.html"
 ---
 
 ## Markdown
