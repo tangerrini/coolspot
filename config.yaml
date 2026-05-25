@@ -14,26 +14,29 @@ params:
   portfolio:
     columns:
       desktop:
-        nature: 4
-        archive: 6
-        people: 2
-        default: 3
-      mobile:
-        default: 2
+        about: 4
+        sketches: 6
+        photos: 2
         archive: 3
-        people: 1
+        default: 2
+      mobile:
+        about: 4
+        sketches: 6
+        photos: 2
+        archive: 3
+        default: 2
   socials:
     # todo: change these links.
     - icon: 'far fa-envelope fa-lg'
-      url: 'mailto:eternity@bora.sh'
+      url: 'mailto: ...'
       landing: true
     - icon: 'fab fa-github fa-lg'
-      url: 'https://github.com/boratanrikulu/eternity'
+      url: ''
       landing: true
-    - icon: 'fab fa-instagram fa-lg'
-      url: 'https://instagram.bora.sh/eternity'
-    - icon: 'fab fa-linkedin-in fa-lg'
-      url: 'https://linkedin.bora.sh/in/eternity'
+    # - icon: 'fab fa-instgrm fa-lg'
+    #   url: ''
+    # - icon: 'fab fa-linkedin-in fa-lg'
+    #   url: ''
   homepage: "/work" # homepage link, mostly same with menu.main[0]
   specialPages:
     - work
@@ -59,18 +62,15 @@ permalinks:
 
 menu:
   main:
-    - name: work
-      url: /work/
+    - name: about
+      url: /about/
       weight: 1
-    - name: people
-      url: /tags/people/
+    - name: sketches
+      url: /sketches/
       weight: 2
-    - name: nature
-      url: /tags/nature/
+    - name: photos
+      url: /photos/
       weight: 3
     - name: archive
       url: /tags/archive/
       weight: 4
-    - name: about
-      url: /about/
-      weight: 5
