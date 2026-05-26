@@ -1,0 +1,15 @@
+/* Тонкая линия активного пункта */
+a:hover,
+a.active {
+    border-bottom: 1px solid var(--main);
+}
+
+/* Выравнивание меню по левому краю */
+.navbar-middle {
+    align-items: flex-start;
+    text-align: left;
+}
+
+.navbar-middle .menu {
+    text-align: left;
+}

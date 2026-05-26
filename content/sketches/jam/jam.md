@@ -5,6 +5,7 @@ date: 2026-05-25
 tags:
   - p5js
   - coding
+  - sketches
 image: "cover.png"
 externalLink: "- https://tangerrini.github.io/sketches/sketch_210517b_masking_JAM/index.html"
 ---
