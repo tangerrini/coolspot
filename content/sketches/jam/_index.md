@@ -1,6 +1,6 @@
 ---
 weight: 1
-title: "sketches"
+title: sketches
 date: 2026-05-25
 tags:
   - p5js
