@@ -1,5 +1,5 @@
 ---
-weight: 3
+weight: 1
 title: "Jam"
 date: 2026-05-25
 tags:
