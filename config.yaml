@@ -1,7 +1,7 @@
 baseURL: "https://tangerrini.github.io/coolspot/" # todo: change site url.
 title: "coolspot" # todo: change site name.
 defaultContentLanguage: 'en'
-theme: eternity
+theme: "gallery"
 googleAnalytics: '' # todo: set your analytics id.
 
 params:
