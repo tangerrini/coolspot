@@ -15,13 +15,13 @@ params:
     columns:
       desktop:
         about: 4
-        sketches: 6
+        sketches: 1
         photos: 2
         archive: 3
         default: 2
       mobile:
         about: 4
-        sketches: 6
+        sketches: 1
         photos: 2
         archive: 3
         default: 2
