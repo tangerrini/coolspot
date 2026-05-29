@@ -6,7 +6,7 @@ theme = "berenice"
 timeout = "120s"
 
 [params]
-HugoFooter = true
+HugoFooter = false
 
 [params.author]
 name = "Your name"
