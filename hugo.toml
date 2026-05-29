@@ -11,4 +11,3 @@ unsafe = true
 [params]
 author = "Your Name"
 description = "Personal media gallery"
-
