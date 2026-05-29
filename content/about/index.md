@@ -3,7 +3,7 @@ title: "About"
 featured_image: "about-1.jpg"
 ---
 
-Hi, I'm Tanger.
+Hi, I'm Aleksei.
 
 This is a small personal place for photos, sketches, visual notes, and experiments.
 
