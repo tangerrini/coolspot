@@ -1,0 +1,15 @@
+<nav class="text-sm text-gray-500 mb-4 space-x-1">
+    <a href="{{ .Site.Home.RelPermalink }}" class="hover:underline">Home</a>
+
+    {{ if not .IsHome }}
+    {{ range .Ancestors.Reverse }}
+    {{ if not .IsHome }}
+    /
+    <a href="{{ .RelPermalink }}" class="hover:underline capitalize">{{ .Title }}</a>
+    {{ end }}
+    {{ end }}
+
+    /
+    <span class="capitalize">{{ .Title }}</span>
+    {{ end }}
+</nav>
