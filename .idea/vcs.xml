@@ -2,6 +2,6 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/themes/eternity" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/themes/berenice" vcs="Git" />
   </component>
 </project>
