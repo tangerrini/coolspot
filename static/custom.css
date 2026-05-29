@@ -1,0 +1,14 @@
+@font-face {
+    font-family: "lg";
+    src:
+            url("/coolspot/fonts/lg.ttf") format("truetype"),
+            url("/coolspot/fonts/lg.woff") format("woff"),
+            url("/coolspot/fonts/lg.svg") format("svg");
+    font-weight: 400;
+    font-style: normal;
+    font-display: block;
+}
+
+.lg-icon {
+    font-family: "lg" !important;
+}
