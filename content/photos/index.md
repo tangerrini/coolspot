@@ -1,11 +1,6 @@
 ---
 title: "Photos"
-featured_image_url: "https://photos.app.goo.gl/v3KcSzd3j8DC4sTq9"
-external_link: "https://photos.app.goo.gl/v3KcSzd3j8DC4sTq9"
-
-external_images:
-  - title: "Photo 1"
-    url: "https://photos.app.goo.gl/v3KcSzd3j8DC4sTq9"
-    thumb: "https://photos.app.goo.gl/v3KcSzd3j8DC4sTq9"
+featured_image: "photo-1.jpg"
+external_url: "https://photos.app.goo.gl/CaqudbajL8gKUQiv5"
 ---
 A collection of photos.
