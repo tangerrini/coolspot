@@ -1,0 +1,13 @@
+baseURL = "https://tangerrini.github.io/coolspot/"
+languageCode = 'en-us'
+title = "coolspot"
+theme = "berenice"
+
+timeout = "120s"
+
+[params]
+HugoFooter = true
+
+[params.author]
+name = "Your name"
+email = "your@family.name"
