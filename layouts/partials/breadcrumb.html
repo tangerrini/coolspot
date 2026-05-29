@@ -1,0 +1,13 @@
+<nav class="text-sm text-gray-500 mb-4 space-x-1">
+    <a href="{{ "/" | relURL }}" class="hover:underline">Home</a>
+
+    {{ with .Section }}
+    /
+    <a href="{{ printf "/%s/" . | relURL }}" class="hover:underline capitalize">{{ . }}</a>
+    {{ end }}
+
+    {{ if and (not .IsHome) (ne .Kind "section") }}
+    /
+    <span class="capitalize">{{ .Title }}</span>
+    {{ end }}
+</nav>
