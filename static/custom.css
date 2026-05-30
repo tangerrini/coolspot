@@ -33,46 +33,7 @@
 }
 */
 
-@keyframes floating-card {
-    0% {
-        transform: translate3d(0, 0, 0);
-    }
-
-    12.5% {
-        transform: translate3d(3px, -2px, 0);
-    }
-
-    25% {
-        transform: translate3d(4px, 0, 0);
-    }
-
-    37.5% {
-        transform: translate3d(3px, 2px, 0);
-    }
-
-    50% {
-        transform: translate3d(0, 0, 0);
-    }
-
-    62.5% {
-        transform: translate3d(-3px, -2px, 0);
-    }
-
-    75% {
-        transform: translate3d(-4px, 0, 0);
-    }
-
-    87.5% {
-        transform: translate3d(-3px, 2px, 0);
-    }
-
-    100% {
-        transform: translate3d(0, 0, 0);
-    }
-}
-
 .floating-thumb {
-    animation: floating-card 9.5s linear infinite;
     box-shadow: 0 10px 24px rgb(0 0 0 / 0.12);
     will-change: transform;
     transition:
@@ -80,28 +41,7 @@
             filter 350ms ease;
 }
 
-.floating-thumb:nth-child(2n) {
-    animation-delay: -1.7s;
-    animation-duration: 10.4s;
-}
-
-.floating-thumb:nth-child(3n) {
-    animation-delay: -3.3s;
-    animation-duration: 9.1s;
-}
-
-.floating-thumb:nth-child(4n) {
-    animation-delay: -2.5s;
-    animation-duration: 11.2s;
-}
-
-.floating-thumb:nth-child(5n) {
-    animation-delay: -4.1s;
-    animation-duration: 8.7s;
-}
-
 .floating-thumb:hover {
-    animation-play-state: paused;
     box-shadow: 0 18px 38px rgb(0 0 0 / 0.20);
     filter: saturate(1.05);
 }
