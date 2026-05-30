@@ -35,35 +35,39 @@
 
 @keyframes floating-card {
     0% {
-        transform: translate3d(-3px, 1px, 0);
+        transform: translate3d(0, 0, 0);
     }
 
-    14% {
-        transform: translate3d(-1px, -3px, 0);
+    12.5% {
+        transform: translate3d(3px, -2px, 0);
     }
 
-    29% {
-        transform: translate3d(2px, -4px, 0);
+    25% {
+        transform: translate3d(4px, 0, 0);
     }
 
-    43% {
-        transform: translate3d(4px, -1px, 0);
+    37.5% {
+        transform: translate3d(3px, 2px, 0);
     }
 
-    57% {
-        transform: translate3d(2px, 3px, 0);
+    50% {
+        transform: translate3d(0, 0, 0);
     }
 
-    71% {
-        transform: translate3d(-2px, 4px, 0);
+    62.5% {
+        transform: translate3d(-3px, -2px, 0);
     }
 
-    86% {
-        transform: translate3d(-4px, 2px, 0);
+    75% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    87.5% {
+        transform: translate3d(-3px, 2px, 0);
     }
 
     100% {
-        transform: translate3d(-3px, 1px, 0);
+        transform: translate3d(0, 0, 0);
     }
 }
 
