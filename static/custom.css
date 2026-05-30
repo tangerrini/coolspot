@@ -33,62 +33,84 @@
 }
 */
 
-@keyframes floating-card {
+@keyframes floating-x {
     0% {
-        offset-distance: 0%;
+        transform: translateX(-2px);
+    }
+
+    50% {
+        transform: translateX(2px);
     }
 
     100% {
-        offset-distance: 100%;
+        transform: translateX(-2px);
+    }
+}
+
+@keyframes floating-y {
+    0% {
+        transform: translateY(1px);
+    }
+
+    50% {
+        transform: translateY(-3px);
+    }
+
+    100% {
+        transform: translateY(1px);
     }
 }
 
 .floating-thumb {
-    --magnet-x: 0px;
-    --magnet-y: 0px;
-
-    position: relative;
-    offset-path: path("M 0 0 C 1 -2, 3 -2, 4 0 C 3 2, 1 2, 0 0 C -1 -2, -3 -2, -4 0 C -3 2, -1 2, 0 0");
-    offset-anchor: 50% 50%;
-    offset-rotate: 0deg;
-    animation: floating-card 12s linear infinite;
-    will-change: offset-distance, transform;
+    animation: floating-x 8s ease-in-out infinite;
     box-shadow: 0 10px 24px rgb(0 0 0 / 0.12);
+    will-change: transform;
     transition:
             box-shadow 350ms ease,
-            filter 350ms ease,
-            transform 350ms ease;
+            filter 350ms ease;
+}
+
+.floating-thumb > a {
+    animation: floating-y 6.5s ease-in-out infinite;
+    will-change: transform;
 }
 
 .floating-thumb:nth-child(2n) {
-    animation-delay: -1.6s;
-    animation-duration: 12.8s;
+    animation-delay: -1.4s;
+    animation-duration: 8.7s;
+}
+
+.floating-thumb:nth-child(2n) > a {
+    animation-delay: -2.1s;
+    animation-duration: 7.4s;
 }
 
 .floating-thumb:nth-child(3n) {
-    animation-delay: -3.1s;
-    animation-duration: 13.4s;
+    animation-delay: -3s;
+    animation-duration: 9.2s;
+}
+
+.floating-thumb:nth-child(3n) > a {
+    animation-delay: -1.2s;
+    animation-duration: 6.9s;
 }
 
 .floating-thumb:nth-child(4n) {
-    animation-delay: -2.4s;
-    animation-duration: 11.8s;
+    animation-delay: -2.2s;
+    animation-duration: 7.8s;
 }
 
-.floating-thumb:nth-child(5n) {
-    animation-delay: -4s;
-    animation-duration: 14s;
+.floating-thumb:nth-child(4n) > a {
+    animation-delay: -3.4s;
+    animation-duration: 7.8s;
+}
+
+.floating-thumb:hover,
+.floating-thumb:hover > a {
+    animation-play-state: paused;
 }
 
 .floating-thumb:hover {
-    animation-play-state: paused;
-    box-shadow: 0 18px 38px rgb(0 0 0 / 0.20);
-    filter: saturate(1.05);
-}
-
-.floating-thumb.is-magnetic {
-    animation-play-state: paused;
-    transform: translate3d(var(--magnet-x), var(--magnet-y), 0) scale(1.025);
     box-shadow: 0 18px 38px rgb(0 0 0 / 0.20);
     filter: saturate(1.05);
 }
