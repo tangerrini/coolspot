@@ -21,7 +21,7 @@
         {{ $isExternal = true }}
         {{ end }}
 
-        <div class="floating-thumb rounded overflow-hidden transition">
+        <div class="floating-thumb break-inside-avoid mb-4 rounded overflow-hidden shadow hover:shadow-md transition">
             <a href="{{ $href }}" class="relative block group"{{ if $isExternal }} target="_blank" rel="noopener noreferrer"{{ end }}>
                 {{ if $cover }}
                 <img src="{{ $cover }}" class="w-full h-auto object-cover" alt="{{ .Title }}">
