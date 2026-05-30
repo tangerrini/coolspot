@@ -1,9 +1,9 @@
 @font-face {
     font-family: "lg";
     src:
-            url("/coolspot/fonts/lg.ttf") format("truetype"),
-            url("/coolspot/fonts/lg.woff") format("woff"),
-            url("/coolspot/fonts/lg.svg") format("svg");
+            url("static/fonts/lg.ttf") format("truetype"),
+            url("static/fonts/lg.woff") format("woff"),
+            url("static/fonts/lg.svg") format("svg");
     font-weight: 400;
     font-style: normal;
     font-display: block;
@@ -66,6 +66,8 @@
 }
 
 
+
+
 .floating-thumb:nth-child(2n) {
     animation-delay: -1.2s;
     animation-duration: 5.2s;
@@ -89,6 +91,32 @@
 .floating-thumb:hover {
     animation-play-state: paused;
     transform: translateY(-12px) scale(1.035);
+    box-shadow: 0 22px 45px rgb(0 0 0 / 0.25);
+    filter: saturate(1.05);
+}
+
+.floating-thumb {
+    --magnet-x: 0px;
+    --magnet-y: 0px;
+
+    animation: floating-card 4.5s ease-in-out infinite;
+    will-change: transform;
+    box-shadow: 0 12px 30px rgb(0 0 0 / 0.16);
+    transition:
+            transform 250ms ease,
+            box-shadow 250ms ease,
+            filter 250ms ease;
+}
+
+.floating-thumb.is-magnetic {
+    animation-play-state: paused;
+    transform: translate3d(var(--magnet-x), var(--magnet-y), 0) scale(1.035);
+    box-shadow: 0 22px 45px rgb(0 0 0 / 0.25);
+    filter: saturate(1.05);
+}
+
+.floating-thumb:hover {
+    animation-play-state: paused;
     box-shadow: 0 22px 45px rgb(0 0 0 / 0.25);
     filter: saturate(1.05);
 }
