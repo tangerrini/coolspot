@@ -19,34 +19,5 @@
 
       {{ end }}
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const cards = Array.from(document.querySelectorAll(".floating-thumb"));
-
-            const settings = cards.map((card, index) => ({
-                card,
-                phase: index * 1.37,
-                speed: 0.00045 + (index % 5) * 0.000035,
-                amplitudeX: 4 + (index % 3),
-                amplitudeY: 2.5 + (index % 2),
-            }));
-
-            function animateFloatingCards(time) {
-                settings.forEach(({ card, phase, speed, amplitudeX, amplitudeY }) => {
-                    const t = time * speed + phase;
-
-                    const x = Math.sin(t) * amplitudeX;
-                    const y = Math.sin(t * 2) * amplitudeY;
-
-                    card.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-                });
-
-                requestAnimationFrame(animateFloatingCards);
-            }
-
-            requestAnimationFrame(animateFloatingCards);
-        });
-    </script>
-
   </body>
 </html>
