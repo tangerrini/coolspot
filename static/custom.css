@@ -48,11 +48,12 @@
     --magnet-y: 0px;
 
     position: relative;
-    offset-path: path("M 0 0 C 8 -10, 16 -10, 24 0 C 16 10, 8 10, 0 0 C -8 -10, -16 -10, -24 0 C -16 10, -8 10, 0 0");
+    offset-path: path("M 0 0 C 1 -2, 3 -2, 4 0 C 3 2, 1 2, 0 0 C -1 -2, -3 -2, -4 0 C -3 2, -1 2, 0 0");
+    offset-anchor: 50% 50%;
     offset-rotate: 0deg;
-    animation: floating-card 8s linear infinite;
+    animation: floating-card 12s linear infinite;
     will-change: offset-distance, transform;
-    box-shadow: 0 12px 30px rgb(0 0 0 / 0.16);
+    box-shadow: 0 10px 24px rgb(0 0 0 / 0.12);
     transition:
             box-shadow 350ms ease,
             filter 350ms ease,
@@ -61,33 +62,33 @@
 
 .floating-thumb:nth-child(2n) {
     animation-delay: -1.6s;
-    animation-duration: 9s;
+    animation-duration: 12.8s;
 }
 
 .floating-thumb:nth-child(3n) {
     animation-delay: -3.1s;
-    animation-duration: 8.5s;
+    animation-duration: 13.4s;
 }
 
 .floating-thumb:nth-child(4n) {
     animation-delay: -2.4s;
-    animation-duration: 9.5s;
+    animation-duration: 11.8s;
 }
 
 .floating-thumb:nth-child(5n) {
     animation-delay: -4s;
-    animation-duration: 10s;
+    animation-duration: 14s;
 }
 
 .floating-thumb:hover {
     animation-play-state: paused;
-    box-shadow: 0 22px 45px rgb(0 0 0 / 0.25);
+    box-shadow: 0 18px 38px rgb(0 0 0 / 0.20);
     filter: saturate(1.05);
 }
 
 .floating-thumb.is-magnetic {
     animation-play-state: paused;
-    transform: translate3d(var(--magnet-x), var(--magnet-y), 0) scale(1.035);
-    box-shadow: 0 22px 45px rgb(0 0 0 / 0.25);
+    transform: translate3d(var(--magnet-x), var(--magnet-y), 0) scale(1.025);
+    box-shadow: 0 18px 38px rgb(0 0 0 / 0.20);
     filter: saturate(1.05);
 }
