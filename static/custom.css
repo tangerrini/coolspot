@@ -72,7 +72,7 @@
 }
 
 .floating-thumb {
-    animation: floating-card 9.5s ease-in-out infinite;
+    animation: floating-card 9.5s linear infinite;
     box-shadow: 0 10px 24px rgb(0 0 0 / 0.12);
     will-change: transform;
     transition:
