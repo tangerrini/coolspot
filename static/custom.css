@@ -13,9 +13,14 @@
     font-family: "lg" !important;
 }
 
+/*
 @keyframes floating-card {
     0% {
-        transform: translateY(0) rotate(0deg);
+        transform: translate3d(0, 0, 0) rotate(0deg);
+    }
+
+    25% {
+        transform: translate3d(4px, -5px, 0) rotate(0.35deg);
     }
 
     50% {
@@ -24,6 +29,29 @@
 
     100% {
         transform: translateY(0) rotate(0deg);
+    }
+}
+*/
+
+@keyframes floating-card {
+    0% {
+        transform: translate3d(0, 0, 0) rotate(0deg);
+    }
+
+    25% {
+        transform: translate3d(4px, -5px, 0) rotate(0.35deg);
+    }
+
+    50% {
+        transform: translate3d(-3px, -9px, 0) rotate(-0.25deg);
+    }
+
+    75% {
+        transform: translate3d(5px, -4px, 0) rotate(0.2deg);
+    }
+
+    100% {
+        transform: translate3d(0, 0, 0) rotate(0deg);
     }
 }
 
