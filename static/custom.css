@@ -33,26 +33,48 @@
 }
 */
 
-.floating-thumb {
-    box-shadow: 0 10px 24px rgb(0 0 0 / 0.12);
-    will-change: transform;
-    transition:
-            box-shadow 350ms ease,
-            filter 350ms ease;
+@keyframes image-elastic-in {
+    0% {
+        transform: scale(1);
+    }
+
+    45% {
+        transform: scale(1.105);
+    }
+
+    65% {
+        transform: scale(1.065);
+    }
+
+    82% {
+        transform: scale(1.085);
+    }
+
+    100% {
+        transform: scale(1.08);
+    }
+}
+
+@keyframes image-elastic-out {
+    0% {
+        transform: scale(1.08);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 .floating-thumb img {
     transform: scale(1);
     transform-origin: center;
-    transition: transform 900ms cubic-bezier(0.34, 1.56, 0.64, 1);
     will-change: transform;
 }
 
-.floating-thumb:hover {
-    box-shadow: 0 18px 38px rgb(0 0 0 / 0.20);
-    filter: saturate(1.05);
+.floating-thumb:hover img {
+    animation: image-elastic-in 900ms forwards;
 }
 
-.floating-thumb:hover img {
-    transform: scale(1.08);
+.floating-thumb:not(:hover) img {
+    animation: image-elastic-out 250ms ease-out forwards;
 }
