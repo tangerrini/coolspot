@@ -46,11 +46,11 @@
         transform: scale(1.065);
     }
 
-    72% {
+    62% {
         transform: scale(1.085);
     }
 
-    100% {
+    72% {
         transform: scale(1.08);
     }
 }
