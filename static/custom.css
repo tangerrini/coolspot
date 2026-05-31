@@ -38,19 +38,19 @@
         transform: scale(1);
     }
 
-    25% {
+    55% {
         transform: scale(1.105);
     }
 
-    30% {
+    60% {
         transform: scale(1.065);
     }
 
-    55% {
+    85% {
         transform: scale(1.085);
     }
 
-    72% {
+    100% {
         transform: scale(1.08);
     }
 }
@@ -72,7 +72,7 @@
 }
 
 .floating-thumb:hover img {
-    animation: image-elastic-in 900ms forwards;
+    animation: image-elastic-in 500ms forwards;
 }
 
 .floating-thumb:not(:hover) img {
