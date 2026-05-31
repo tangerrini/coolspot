@@ -38,15 +38,15 @@
         transform: scale(1);
     }
 
-    55% {
+    45% {
         transform: scale(1.105);
     }
 
-    60% {
+    65% {
         transform: scale(1.065);
     }
 
-    85% {
+    82% {
         transform: scale(1.085);
     }
 
