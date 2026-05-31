@@ -1,9 +1,9 @@
 @font-face {
     font-family: "lg";
     src:
-            url("/fonts/lg.ttf") format("truetype"),
-            url("/fonts/lg.woff") format("woff"),
-            url("/fonts/lg.svg") format("svg");
+            url("fonts/lg.ttf") format("truetype"),
+            url("fonts/lg.woff") format("woff"),
+            url("fonts/lg.svg") format("svg");
     font-weight: 400;
     font-style: normal;
     font-display: block;
@@ -11,6 +11,17 @@
 
 .lg-icon {
     font-family: "lg" !important;
+}
+
+.site-body {
+    min-height: 100vh;
+    background-color: #111;
+    background-image: linear-gradient(rgb(0 0 0 / 0.25), rgb(0 0 0 / 0.25)),
+    url("images/brickwall-background.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 /*
@@ -71,6 +82,92 @@
     will-change: transform;
 }
 
+.albums-is-returning .floating-thumb {
+    opacity: 0;
+    transform: translate3d(-120vw, 0, 0);
+    pointer-events: none;
+}
+
+.floating-thumb {
+    will-change: transform, opacity, filter;
+}
+
+.floating-thumb {
+    will-change: transform, opacity, filter;
+}
+
+.album-caption {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+    will-change: transform, opacity;
+}
+
+.album-title {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+    will-change: transform, opacity;
+}
+
+.albums-is-returning .album-caption,
+.floating-thumb.is-entering .album-caption {
+    transform: translate3d(0, 100%, 0);
+    opacity: 0;
+}
+
+.albums-is-returning .album-title,
+.floating-thumb.is-entering .album-title {
+    transform: translate3d(-32px, 0, 0);
+    opacity: 0;
+}
+
+/*
+.floating-thumb.content-revealed .album-caption {
+    animation: album-caption-rise 1200ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.floating-thumb.content-revealed .album-title {
+    animation: album-title-slide-in 1100ms cubic-bezier(0.22, 1, 0.36, 1) 260ms forwards;
+}
+*/
+
+@keyframes album-caption-rise {
+    from {
+        transform: translate3d(0, 100%, 0);
+        opacity: 0;
+    }
+
+    to {
+        transform: translate3d(0, 0, 0);
+        opacity: 1;
+    }
+}
+
+@keyframes album-title-slide-in {
+    from {
+        transform: translate3d(-32px, 0, 0);
+        opacity: 0;
+    }
+
+    to {
+        transform: translate3d(0, 0, 0);
+        opacity: 1;
+    }
+}
+
+.floating-thumb.is-leaving,
+.floating-thumb.is-entering {
+    pointer-events: none;
+}
+
+.floating-thumb:hover img {
+    animation: image-elastic-in 500ms forwards;
+}
+
+.floating-thumb.is-leaving,
+.floating-thumb.is-entering {
+    pointer-events: none;
+}
+
 .floating-thumb:hover img {
     animation: image-elastic-in 500ms forwards;
 }
@@ -78,3 +175,4 @@
 .floating-thumb:not(:hover) img {
     animation: image-elastic-out 250ms ease-out forwards;
 }
+

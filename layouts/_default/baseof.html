@@ -2,8 +2,14 @@
 <html lang="en">
 <head>
     {{ partial "head.html" . }}
+    <script>
+        if (sessionStorage.getItem("albumsCardsLeaving") === "true") {
+            document.documentElement.classList.add("albums-is-returning");
+        }
+    </script>
 </head>
-<body class="text-gray-900 font-sans" style="background-color: #1d3853;">
+<!-- <body class="text-gray-900 font-sans" style="background-color: #1d3853;"> -->
+<body class="site-body text-gray-900 font-sans">
 {{ partial "header.html" . }}
 
 {{ block "main" . }}{{ end }}
@@ -23,6 +29,8 @@
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const cards = Array.from(document.querySelectorAll(".floating-thumb"));
+        let isPageLeaving = false;
+        let hasPlayedEnteringAnimation = false;
 
         const settings = cards.map((card, index) => ({
             card,
@@ -30,10 +38,17 @@
             speed: 0.00045 + (index % 5) * 0.000035,
             amplitudeX: 3 + (index % 3),
             amplitudeY: 1.5 + (index % 2),
+            isLeaving: false,
+            isEntering: false,
         }));
 
         function animateFloatingCards(time) {
-            settings.forEach(({ card, phase, speed, amplitudeX, amplitudeY }) => {
+            settings.forEach((setting) => {
+                if (setting.isLeaving || setting.isEntering) {
+                    return;
+                }
+
+                const { card, phase, speed, amplitudeX, amplitudeY } = setting;
                 const t = time * speed + phase;
 
                 const x = Math.sin(t) * amplitudeX;
@@ -45,7 +60,209 @@
             requestAnimationFrame(animateFloatingCards);
         }
 
+        function revealCardContent(card) {
+            if (card.dataset.contentRevealed === "true") {
+                return;
+            }
+
+            const caption = card.querySelector(".album-caption");
+            const title = card.querySelector(".album-title");
+
+            if (!caption || !title) {
+                return;
+            }
+
+            card.dataset.contentRevealed = "true";
+
+            caption.getAnimations().forEach((animation) => animation.cancel());
+            title.getAnimations().forEach((animation) => animation.cancel());
+
+            caption.style.transform = "translate3d(0, 100%, 0)";
+            caption.style.opacity = "0";
+
+            title.style.transform = "translate3d(-32px, 0, 0)";
+            title.style.opacity = "0";
+
+            requestAnimationFrame(() => {
+                caption.animate(
+                    [
+                        {
+                            transform: "translate3d(0, 100%, 0)",
+                            opacity: 0,
+                        },
+                        {
+                            transform: "translate3d(0, 0, 0)",
+                            opacity: 1,
+                        },
+                    ],
+                    {
+                        duration: 3200,
+                        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+                        fill: "forwards",
+                    }
+                );
+
+                title.animate(
+                    [
+                        {
+                            transform: "translate3d(-32px, 0, 0)",
+                            opacity: 0,
+                        },
+                        {
+                            transform: "translate3d(0, 0, 0)",
+                            opacity: 1,
+                        },
+                    ],
+                    {
+                        duration: 3100,
+                        delay: 420,
+                        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+                        fill: "forwards",
+                    }
+                );
+            });
+        }
+
+        function playEnteringAnimation() {
+            if (
+                hasPlayedEnteringAnimation ||
+                !cards.length ||
+                sessionStorage.getItem("albumsCardsLeaving") !== "true"
+            ) {
+                document.documentElement.classList.remove("albums-is-returning");
+                return;
+            }
+
+            hasPlayedEnteringAnimation = true;
+            sessionStorage.removeItem("albumsCardsLeaving");
+
+            settings.forEach((setting, index) => {
+                const directionY = index % 2 === 0 ? -24 : 24;
+                const rotation = index % 2 === 0 ? -8 : 8;
+                const delay = index * 100;
+
+                setting.isEntering = true;
+                setting.isLeaving = false;
+
+                setting.card.classList.add("is-entering");
+                setting.card.classList.remove("is-leaving");
+
+                const enterAnimation = setting.card.animate(
+                    [
+                        {
+                            transform: `translate3d(-120vw, ${directionY}px, 0) rotate(${rotation}deg)`,
+                            opacity: 0,
+                            filter: "blur(2px)",
+                        },
+                        {
+                            transform: "translate3d(0, 0, 0) rotate(0deg)",
+                            opacity: 1,
+                            filter: "blur(0)",
+                        },
+                    ],
+                    {
+                        duration: 1300,
+                        delay,
+                        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+                        fill: "both",
+                    }
+                );
+
+                enterAnimation.finished.then(() => {
+                    enterAnimation.cancel();
+
+                    setting.card.style.opacity = "";
+                    setting.card.style.filter = "";
+                    setting.card.style.transform = "";
+
+                    setting.isEntering = false;
+                    setting.card.classList.remove("is-entering");
+
+                    revealCardContent(setting.card);
+                });
+            });
+
+            requestAnimationFrame(() => {
+                document.documentElement.classList.remove("albums-is-returning");
+            });
+        }
+
+        cards.forEach((card) => {
+            const link = card.querySelector("a");
+
+            if (!link) {
+                return;
+            }
+
+            link.addEventListener("click", (event) => {
+                if (isPageLeaving) {
+                    event.preventDefault();
+                    return;
+                }
+
+                if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target === "_blank") {
+                    return;
+                }
+
+                event.preventDefault();
+                isPageLeaving = true;
+
+                const href = link.href;
+                sessionStorage.setItem("albumsCardsLeaving", "true");
+
+                const animations = settings.map((setting, index) => {
+                    const directionY = index % 2 === 0 ? -24 : 24;
+                    const rotation = index % 2 === 0 ? -8 : 8;
+                    const delay = index * 100;
+
+                    setting.card.dataset.contentRevealed = "false";
+
+                    setting.isLeaving = true;
+                    setting.card.classList.add("is-leaving");
+
+                    return setting.card.animate(
+                        [
+                            {
+                                transform: setting.card.style.transform || "translate3d(0, 0, 0)",
+                                opacity: 1,
+                                filter: "blur(0)",
+                            },
+                            {
+                                transform: `translate3d(-120vw, ${directionY}px, 0) rotate(${rotation}deg)`,
+                                opacity: 0,
+                                filter: "blur(2px)",
+                            },
+                        ],
+                        {
+                            duration: 3100,
+                            delay,
+                            easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+                            fill: "forwards",
+                        }
+                    ).finished;
+                });
+
+                Promise.all(animations).then(() => {
+                    window.location.href = href;
+                });
+            });
+        });
+
+        playEnteringAnimation();
         requestAnimationFrame(animateFloatingCards);
+
+        window.addEventListener("pageshow", () => {
+            isPageLeaving = false;
+
+            settings.forEach((setting) => {
+                setting.isLeaving = false;
+                setting.card.classList.remove("is-leaving");
+            });
+
+            if (!hasPlayedEnteringAnimation) {
+                playEnteringAnimation();
+            }
+        });
     });
 </script>
 </body>

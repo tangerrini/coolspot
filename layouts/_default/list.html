@@ -1,6 +1,10 @@
 {{ define "main" }}
 <main class="max-w-7xl mx-auto px-4 py-8">
+    <!-- <h1 class="text-3xl font-bold mb-6 text-white">Albums</h1> -->
+    <h1 class="text-3xl font-bold mb-6 text-white"></h1>
+    {{ if not .IsHome }}
     {{ partial "breadcrumb.html" . }}
+    {{ end }}
 
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {{ range .Pages }}
@@ -31,8 +35,8 @@
                 </div>
                 {{ end }}
 
-                <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent p-3">
-                    <h2 class="text-white text-lg font-semibold drop-shadow-sm group-hover:underline">
+                <div class="album-caption absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent p-3">
+                    <h2 class="album-title text-white text-lg font-semibold drop-shadow-sm group-hover:underline">
                         {{ .Title }}
                     </h2>
                 </div>
