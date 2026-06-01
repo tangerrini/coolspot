@@ -176,3 +176,82 @@
     animation: image-elastic-out 250ms ease-out forwards;
 }
 
+.gallery-stage {
+    position: relative;
+    min-height: 60vh;
+}
+
+.gallery-menu,
+.gallery-panel {
+    display: none;
+}
+
+.gallery-menu.is-active,
+.gallery-panel.is-active {
+    display: block;
+}
+
+.gallery-panel:not(.is-active) {
+    display: none !important;
+}
+
+.gallery-menu:not(.is-active) {
+    display: none !important;
+}
+
+.gallery-menu:not(.is-active) {
+    display: none !important;
+}
+
+.gallery-panel-header {
+    position: relative;
+    z-index: 5;
+}
+
+.gallery-back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border: 1px solid rgb(255 255 255 / 0.35);
+    border-radius: 999px;
+    padding: 0.45rem 0.95rem;
+    color: white;
+    background: rgb(0 0 0 / 0.35);
+    backdrop-filter: blur(6px);
+    cursor: pointer;
+    font-weight: 700;
+    line-height: 1;
+    box-shadow: 0 8px 20px rgb(0 0 0 / 0.25);
+    transition:
+            background-color 180ms ease,
+            border-color 180ms ease,
+            transform 180ms ease,
+            box-shadow 180ms ease;
+}
+
+.gallery-back-button:hover {
+    background: rgb(255 255 255 / 0.16);
+    border-color: rgb(255 255 255 / 0.6);
+    transform: translateY(-1px);
+    box-shadow: 0 12px 28px rgb(0 0 0 / 0.32);
+}
+
+.gallery-back-button:active {
+    transform: translateY(0);
+}
+
+.gallery-panel-title {
+    color: white;
+    text-shadow: 0 2px 10px rgb(0 0 0 / 0.55);
+}
+
+.card-flight {
+    width: 100%;
+    height: 100%;
+    will-change: transform, opacity, filter;
+}
+
+.floating-thumb.is-leaving .card-flight,
+.floating-thumb.is-entering .card-flight {
+    pointer-events: none;
+}
