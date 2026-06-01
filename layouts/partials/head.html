@@ -1,7 +1,11 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>{{ .Title }}</title>
+<title>{{ if .Title }}{{ .Title }} | {{ end }}{{ .Site.Title }}</title>
 
-<link rel="stylesheet" type="text/css" href="{{ "lightgallery-bundle.min.css" | relURL }}">
-<link rel="stylesheet" type="text/css" href="{{ "custom.css" | relURL }}">
-<script src="{{ "tailwind.js" | relURL }}"></script>
+{{ $lightgalleryCss := "lightgallery-bundle.min.css" | relURL }}
+{{ $customCss := "custom.css" | relURL }}
+{{ $tailwindJs := "tailwind.js" | relURL }}
+
+<link rel="stylesheet" type="text/css" href="{{ $lightgalleryCss }}">
+<link rel="stylesheet" type="text/css" href="{{ $customCss }}">
+<script src="{{ $tailwindJs }}"></script>

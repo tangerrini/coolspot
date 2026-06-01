@@ -49,15 +49,27 @@
         let isSwitching = false;
 
         function getFloatingTransform(state, time) {
-            const t = time * state.speed + state.phase;
             const floatStartTime = state.floatStartTime || 0;
-            const floatProgress = Math.min(Math.max((time - floatStartTime) / 1000, 0), 1);
-            const easedProgress = 1 - Math.pow(1 - floatProgress, 3);
+            const floatHold = state.floatHold || 0;
+            const floatFadeIn = state.floatFadeIn || 1800;
+
+            const floatElapsed = Math.max(time - floatStartTime - floatHold, 0);
+            const floatProgress = Math.min(floatElapsed / floatFadeIn, 1);
+
+            const easedProgress = floatProgress < 0.5
+                ? 16 * Math.pow(floatProgress, 5)
+                : 1 - Math.pow(-2 * floatProgress + 2, 5) / 2;
+
+            const t = floatElapsed * state.speed + state.phase;
 
             const x = Math.sin(t) * state.amplitudeX * easedProgress;
             const y = Math.sin(t * 2) * state.amplitudeY * easedProgress;
 
             return `translate3d(${x}px, ${y}px, 0)`;
+        }
+
+        function getActivePanel() {
+            return document.querySelector(`[data-gallery-panel="${activePanelName}"]`);
         }
 
         function getActivePanel() {
@@ -88,15 +100,40 @@
                 amplitudeY: 1.5 + (index % 2),
                 isAnimating: false,
                 floatStartTime: performance.now(),
+                floatHold: 180,
+                floatFadeIn: 1800,
             };
 
             floatingState.set(card, state);
             return state;
         }
 
+        function resetFloating(card, index, time = performance.now()) {
+            const state = ensureFloatingState(card, index);
+
+            state.floatStartTime = time;
+            state.floatHold = 220;
+            state.floatFadeIn = 2200;
+
+            card.style.transform = "translate3d(0, 0, 0)";
+        }
+
+        function getStaggerDelay(index, columns = 6) {
+            const row = Math.floor(index / columns);
+            const column = index % columns;
+
+            return row * 115 + column * 72;
+        }
+
         function animateFloatingCards(time) {
             getActiveCards().forEach((card, index) => {
                 const state = ensureFloatingState(card, index);
+
+                if (card.classList.contains("is-entering") || card.classList.contains("is-leaving")) {
+                    state.floatStartTime = time;
+                    card.style.transform = "translate3d(0, 0, 0)";
+                    return;
+                }
 
                 card.style.transform = getFloatingTransform(state, time);
             });
@@ -106,15 +143,44 @@
 
         function animateOut(panel, direction = "left") {
             const cards = Array.from(panel.querySelectorAll(".floating-thumb"));
-            const targetX = direction === "right" ? "120vw" : "-120vw";
+            const targetX = direction === "right" ? "95vw" : "-95vw";
+            const panelHeader = panel.querySelector(".gallery-panel-header");
+
+            if (panelHeader) {
+                panelHeader.getAnimations().forEach((animation) => animation.cancel());
+
+                panelHeader.style.opacity = "1";
+                panelHeader.style.transform = "";
+                panelHeader.style.filter = "";
+
+                panelHeader.animate(
+                    [
+                        {
+                            opacity: 1,
+                            transform: "translate3d(0, 0, 0)",
+                            filter: "blur(0)",
+                        },
+                        {
+                            opacity: 0,
+                            transform: "translate3d(0, -10px, 0)",
+                            filter: "blur(2px)",
+                        },
+                    ],
+                    {
+                        duration: 220,
+                        easing: "ease-out",
+                        fill: "forwards",
+                    }
+                );
+            }
 
             return Promise.all(cards.map((card, index) => {
                 const flight = card.querySelector(".card-flight") || card;
-                const directionY = index % 2 === 0 ? -24 : 24;
+                const directionY = index % 2 === 0 ? -28 : 28;
                 const rotation = direction === "right"
-                    ? (index % 2 === 0 ? 8 : -8)
-                    : (index % 2 === 0 ? -8 : 8);
-                const delay = Math.min(index * 45, 350);
+                    ? (index % 2 === 0 ? 7 : -7)
+                    : (index % 2 === 0 ? -7 : 7);
+                const delay = Math.min(getStaggerDelay(index), 950);
 
                 card.classList.add("is-leaving");
 
@@ -132,9 +198,9 @@
                         },
                     ],
                     {
-                        duration: 620,
+                        duration: 2200,
                         delay,
-                        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+                        easing: "cubic-bezier(0.45, 0, 0.15, 1)",
                         fill: "forwards",
                     }
                 ).finished.then(() => {
@@ -146,6 +212,43 @@
         function animateIn(panel, direction = "right") {
             const cards = Array.from(panel.querySelectorAll(".floating-thumb"));
             const startX = direction === "left" ? "-120vw" : "120vw";
+            const panelHeader = panel.querySelector(".gallery-panel-header");
+
+            if (panelHeader) {
+                panelHeader.getAnimations().forEach((animation) => animation.cancel());
+
+                panelHeader.style.opacity = "0";
+                panelHeader.style.transform = "translate3d(0, -10px, 0)";
+                panelHeader.style.filter = "blur(2px)";
+
+                const headerAnimation = panelHeader.animate(
+                    [
+                        {
+                            opacity: 0,
+                            transform: "translate3d(0, -10px, 0)",
+                            filter: "blur(2px)",
+                        },
+                        {
+                            opacity: 1,
+                            transform: "translate3d(0, 0, 0)",
+                            filter: "blur(0)",
+                        },
+                    ],
+                    {
+                        duration: 360,
+                        easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+                        fill: "forwards",
+                    }
+                );
+
+                headerAnimation.finished.then(() => {
+                    panelHeader.style.opacity = "1";
+                    panelHeader.style.transform = "";
+                    panelHeader.style.filter = "";
+
+                    headerAnimation.cancel();
+                });
+            }
 
             return Promise.all(cards.map((card, index) => {
                 const flight = card.querySelector(".card-flight") || card;
@@ -153,7 +256,9 @@
                 const rotation = direction === "left"
                     ? (index % 2 === 0 ? -8 : 8)
                     : (index % 2 === 0 ? 8 : -8);
-                const delay = Math.min(index * 55, 450);
+                const delay = Math.min(getStaggerDelay(index), 1200);
+
+                resetFloating(card, index);
 
                 card.classList.add("is-entering");
 
@@ -167,29 +272,39 @@
                             transform: `translate3d(${startX}, ${directionY}px, 0) rotate(${rotation}deg)`,
                             opacity: 0,
                             filter: "blur(2px)",
+                            offset: 0,
                         },
                         {
                             transform: "translate3d(0, 0, 0) rotate(0deg)",
                             opacity: 1,
                             filter: "blur(0)",
+                            offset: 1,
                         },
                     ],
                     {
-                        duration: 820,
+                        duration: 1500,
                         delay,
-                        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+                        easing: "cubic-bezier(0.16, 1, 0.3, 1)",
                         fill: "forwards",
                     }
                 );
 
                 return animation.finished.then(() => {
+                    flight.style.opacity = "1";
+                    flight.style.filter = "blur(0)";
+                    flight.style.transform = "translate3d(0, 0, 0) rotate(0deg)";
+
                     animation.cancel();
 
-                    flight.style.opacity = "";
-                    flight.style.filter = "";
-                    flight.style.transform = "";
+                    resetFloating(card, index);
 
-                    card.classList.remove("is-entering");
+                    requestAnimationFrame(() => {
+                        flight.style.opacity = "";
+                        flight.style.filter = "";
+                        flight.style.transform = "";
+
+                        card.classList.remove("is-entering");
+                    });
                 });
             }));
         }
@@ -199,6 +314,7 @@
                 return;
             }
 
+            const galleryStage = document.querySelector(".gallery-stage");
             const currentPanel = document.querySelector(`[data-gallery-panel="${activePanelName}"]`);
             const nextPanel = document.querySelector(`[data-gallery-panel="${nextPanelName}"]`);
 
@@ -210,13 +326,24 @@
 
             isSwitching = true;
 
-            await animateOut(currentPanel, isReturningToMenu ? "right" : "left");
+            if (galleryStage) {
+                galleryStage.classList.add("is-switching");
+            }
 
-            currentPanel.classList.remove("is-active");
             nextPanel.classList.add("is-active");
+
+            const outAnimation = animateOut(currentPanel, isReturningToMenu ? "right" : "left");
+            const inAnimation = animateIn(nextPanel, isReturningToMenu ? "left" : "right");
+
             activePanelName = nextPanelName;
 
-            await animateIn(nextPanel, isReturningToMenu ? "left" : "right");
+            await Promise.all([outAnimation, inAnimation]);
+
+            currentPanel.classList.remove("is-active");
+
+            if (galleryStage) {
+                galleryStage.classList.remove("is-switching");
+            }
 
             isSwitching = false;
         }

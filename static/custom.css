@@ -82,6 +82,19 @@
     will-change: transform;
 }
 
+.gallery-thumb-image {
+    display: block;
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+}
+
+@media (min-width: 768px) {
+    .gallery-thumb-image {
+        height: 120px;
+    }
+}
+
 .albums-is-returning .floating-thumb {
     opacity: 0;
     transform: translate3d(-120vw, 0, 0);
@@ -90,26 +103,78 @@
 
 .floating-thumb {
     will-change: transform, opacity, filter;
+    transition-property: box-shadow;
+    transition-duration: 150ms;
+    transition-timing-function: ease;
 }
+
 
 .floating-thumb {
     will-change: transform, opacity, filter;
 }
 
 .album-caption {
+    position: absolute;
+    overflow: hidden;
     transform: translate3d(0, 0, 0);
     opacity: 1;
     will-change: transform, opacity;
+    transition:
+            transform 900ms cubic-bezier(0.16, 1, 0.3, 1),
+            opacity 900ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.album-caption::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(
+            to top,
+            rgb(0 0 0 / 0.78) 0%,
+            rgb(0 0 0 / 0.48) 55%,
+            rgb(0 0 0 / 0) 100%
+    );
+    transform: translate3d(0, 100%, 0);
+    opacity: 0;
+    will-change: transform, opacity;
+    transition:
+            transform 1000ms cubic-bezier(0.16, 1, 0.3, 1),
+            opacity 1000ms ease;
 }
 
 .album-title {
+    position: relative;
+    z-index: 1;
     transform: translate3d(0, 0, 0);
     opacity: 1;
     will-change: transform, opacity;
+    transition:
+            transform 950ms cubic-bezier(0.16, 1, 0.3, 1) 180ms,
+            opacity 950ms cubic-bezier(0.16, 1, 0.3, 1) 180ms,
+            text-shadow 950ms ease 180ms;
+}
+
+.menu-card:hover .album-caption::before,
+.gallery-item:hover .album-caption::before {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+}
+
+.menu-card:hover .album-title,
+.gallery-item:hover .album-title {
+    text-shadow: 0 4px 18px rgb(0 0 0 / 0.75);
 }
 
 .albums-is-returning .album-caption,
 .floating-thumb.is-entering .album-caption {
+    transform: translate3d(0, 100%, 0);
+    opacity: 0;
+}
+
+.albums-is-returning .album-caption::before,
+.floating-thumb.is-entering .album-caption::before {
     transform: translate3d(0, 100%, 0);
     opacity: 0;
 }
@@ -154,11 +219,6 @@
     }
 }
 
-.floating-thumb.is-leaving,
-.floating-thumb.is-entering {
-    pointer-events: none;
-}
-
 .floating-thumb:hover img {
     animation: image-elastic-in 500ms forwards;
 }
@@ -179,6 +239,17 @@
 .gallery-stage {
     position: relative;
     min-height: 60vh;
+}
+
+.gallery-stage.is-switching {
+    min-height: 60vh;
+}
+
+.gallery-stage.is-switching .gallery-menu,
+.gallery-stage.is-switching .gallery-panel {
+    position: absolute;
+    inset: 0;
+    width: 100%;
 }
 
 .gallery-menu,
@@ -250,8 +321,15 @@
     height: 100%;
     will-change: transform, opacity, filter;
 }
-
-.floating-thumb.is-leaving .card-flight,
-.floating-thumb.is-entering .card-flight {
+.floating-thumb.is-leaving,
+.floating-thumb.is-entering {
     pointer-events: none;
+    transition: none;
+}
+
+.card-flight {
+    width: 100%;
+    height: 100%;
+    will-change: transform, opacity, filter;
+    transition: none;
 }

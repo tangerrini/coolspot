@@ -1,6 +1,6 @@
 {{ define "main" }}
 <main class="max-w-7xl mx-auto px-4 py-8 single-gallery-page">
-    <h1 class="text-3xl font-bold mb-6 text-white"></h1>
+    <!-- <h1 class="gallery-main-title text-3xl font-bold mb-6 text-white"></h1> old not needed -->
 
     {{ if not .IsHome }}
     {{ partial "breadcrumb.html" . }}
@@ -8,14 +8,20 @@
 
     <div class="gallery-stage">
         <section class="gallery-menu is-active" data-gallery-panel="menu">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <div class="gallery-panel-header gallery-menu-header mb-6 flex items-center gap-4">
+                <h2 class="gallery-panel-title text-2xl font-bold">
+                    main
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-4">
                 {{ range .Pages }}
                 {{ $cover := "" }}
 
                 {{ if .Params.featured_image }}
                 {{ $coverRes := .Resources.GetMatch .Params.featured_image }}
                 {{ if and $coverRes (eq $coverRes.MediaType.MainType "image") }}
-                {{ $thumb := $coverRes.Filter (slice images.AutoOrient (images.Process "fit 360x360")) }}
+                {{ $thumb := $coverRes.Filter (slice images.AutoOrient (images.Process "fit 320x320")) }}
                 {{ $cover = $thumb.RelPermalink }}
                 {{ end }}
                 {{ end }}
@@ -26,9 +32,9 @@
                     <div class="card-flight">
                         <button type="button" class="relative block group w-full text-left" data-open-gallery="{{ $sectionName }}">
                             {{ if $cover }}
-                            <img src="{{ $cover }}" class="w-full h-auto object-cover" alt="{{ .Title }}">
+                            <img src="{{ $cover }}" class="gallery-thumb-image w-full object-cover" alt="{{ .Title }}">
                             {{ else }}
-                            <div class="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500 text-sm">
+                            <div class="gallery-thumb-image w-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm">
                                 No preview
                             </div>
                             {{ end }}
@@ -66,7 +72,7 @@
                 <article class="floating-thumb gallery-item {{ if eq $sectionName "sketches" }}letter-card{{ end }} rounded overflow-hidden shadow hover:shadow-md transition">
                 <div class="card-flight">
                     <a href="{{ .RelPermalink }}" class="gallery-lightbox-link" data-src="{{ .RelPermalink }}" data-sub-html="{{ .Name }}">
-                        <img src="{{ $thumb.RelPermalink }}" class="w-full h-auto object-cover" alt="{{ .Name }}">
+                        <img src="{{ $thumb.RelPermalink }}" class="gallery-thumb-image w-full object-cover" alt="{{ .Name }}">
                     </a>
 
                     {{ if eq $sectionName "sketches" }}
