@@ -2,13 +2,7 @@
 <html lang="en">
 <head>
     {{ partial "head.html" . }}
-    <script>
-        if (sessionStorage.getItem("albumsCardsLeaving") === "true") {
-            document.documentElement.classList.add("albums-is-returning");
-        }
-    </script>
 </head>
-<!-- <body class="text-gray-900 font-sans" style="background-color: #1d3853;"> -->
 <body class="site-body text-gray-900 font-sans">
 {{ partial "header.html" . }}
 
@@ -26,33 +20,87 @@
 <br>
 {{ end }}
 
+<script src="{{ "lightgallery.min.js" | relURL }}"></script>
+<script src="{{ "lg-zoom.min.js" | relURL }}"></script>
+
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        const cards = Array.from(document.querySelectorAll(".floating-thumb"));
-        let isPageLeaving = false;
-        let hasPlayedEnteringAnimation = false;
+        const panels = Array.from(document.querySelectorAll("[data-gallery-panel]"));
+        const openButtons = Array.from(document.querySelectorAll("[data-open-gallery]"));
+        const lightboxContainers = Array.from(document.querySelectorAll(".gallery-lightbox"));
 
-        const settings = cards.map((card, index) => ({
-            card,
-            phase: index * 1.37,
-            speed: 0.00045 + (index % 5) * 0.000035,
-            amplitudeX: 3 + (index % 3),
-            amplitudeY: 1.5 + (index % 2),
-            isLeaving: false,
-            isEntering: false,
-        }));
+        lightboxContainers.forEach((container) => {
+            if (typeof lightGallery !== "function") {
+                return;
+            }
+
+            lightGallery(container, {
+                selector: ".gallery-lightbox-link",
+                plugins: window.lgZoom ? [lgZoom] : [],
+                speed: 500,
+                download: false,
+                zoom: true,
+                actualSize: false,
+                backdropDuration: 260,
+            });
+        });
+
+        let activePanelName = "menu";
+        let isSwitching = false;
+
+        function getFloatingTransform(state, time) {
+            const t = time * state.speed + state.phase;
+            const floatStartTime = state.floatStartTime || 0;
+            const floatProgress = Math.min(Math.max((time - floatStartTime) / 1000, 0), 1);
+            const easedProgress = 1 - Math.pow(1 - floatProgress, 3);
+
+            const x = Math.sin(t) * state.amplitudeX * easedProgress;
+            const y = Math.sin(t * 2) * state.amplitudeY * easedProgress;
+
+            return `translate3d(${x}px, ${y}px, 0)`;
+        }
+
+        function getActivePanel() {
+            return document.querySelector(`[data-gallery-panel="${activePanelName}"]`);
+        }
+
+        function getActiveCards() {
+            const activePanel = getActivePanel();
+
+            if (!activePanel) {
+                return [];
+            }
+
+            return Array.from(activePanel.querySelectorAll(".floating-thumb"));
+        }
+
+        const floatingState = new WeakMap();
+
+        function ensureFloatingState(card, index) {
+            if (floatingState.has(card)) {
+                return floatingState.get(card);
+            }
+
+            const state = {
+                phase: index * 1.37,
+                speed: 0.00045 + (index % 5) * 0.000035,
+                amplitudeX: 3 + (index % 3),
+                amplitudeY: 1.5 + (index % 2),
+                isAnimating: false,
+                floatStartTime: performance.now(),
+            };
+
+            floatingState.set(card, state);
+            return state;
+        }
 
         function animateFloatingCards(time) {
-            settings.forEach((setting) => {
-                if (setting.isLeaving || setting.isEntering) {
-                    return;
-                }
+            getActiveCards().forEach((card, index) => {
+                const state = ensureFloatingState(card, index);
+                const t = time * state.speed + state.phase;
 
-                const { card, phase, speed, amplitudeX, amplitudeY } = setting;
-                const t = time * speed + phase;
-
-                const x = Math.sin(t) * amplitudeX;
-                const y = Math.sin(t * 2) * amplitudeY;
+                const x = Math.sin(t) * state.amplitudeX;
+                const y = Math.sin(t * 2) * state.amplitudeY;
 
                 card.style.transform = `translate3d(${x}px, ${y}px, 0)`;
             });
@@ -60,97 +108,67 @@
             requestAnimationFrame(animateFloatingCards);
         }
 
-        function revealCardContent(card) {
-            if (card.dataset.contentRevealed === "true") {
-                return;
-            }
+        function animateOut(panel, direction = "left") {
+            const cards = Array.from(panel.querySelectorAll(".floating-thumb"));
+            const targetX = direction === "right" ? "120vw" : "-120vw";
 
-            const caption = card.querySelector(".album-caption");
-            const title = card.querySelector(".album-title");
+            return Promise.all(cards.map((card, index) => {
+                const flight = card.querySelector(".card-flight") || card;
+                const directionY = index % 2 === 0 ? -24 : 24;
+                const rotation = direction === "right"
+                    ? (index % 2 === 0 ? 8 : -8)
+                    : (index % 2 === 0 ? -8 : 8);
+                const delay = Math.min(index * 45, 350);
 
-            if (!caption || !title) {
-                return;
-            }
+                card.classList.add("is-leaving");
 
-            card.dataset.contentRevealed = "true";
-
-            caption.getAnimations().forEach((animation) => animation.cancel());
-            title.getAnimations().forEach((animation) => animation.cancel());
-
-            caption.style.transform = "translate3d(0, 100%, 0)";
-            caption.style.opacity = "0";
-
-            title.style.transform = "translate3d(-32px, 0, 0)";
-            title.style.opacity = "0";
-
-            requestAnimationFrame(() => {
-                caption.animate(
+                return flight.animate(
                     [
                         {
-                            transform: "translate3d(0, 100%, 0)",
-                            opacity: 0,
+                            transform: "translate3d(0, 0, 0) rotate(0deg)",
+                            opacity: 1,
+                            filter: "blur(0)",
                         },
                         {
-                            transform: "translate3d(0, 0, 0)",
-                            opacity: 1,
+                            transform: `translate3d(${targetX}, ${directionY}px, 0) rotate(${rotation}deg)`,
+                            opacity: 0,
+                            filter: "blur(2px)",
                         },
                     ],
                     {
-                        duration: 3200,
+                        duration: 620,
+                        delay,
                         easing: "cubic-bezier(0.22, 1, 0.36, 1)",
                         fill: "forwards",
                     }
-                );
-
-                title.animate(
-                    [
-                        {
-                            transform: "translate3d(-32px, 0, 0)",
-                            opacity: 0,
-                        },
-                        {
-                            transform: "translate3d(0, 0, 0)",
-                            opacity: 1,
-                        },
-                    ],
-                    {
-                        duration: 3100,
-                        delay: 420,
-                        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-                        fill: "forwards",
-                    }
-                );
-            });
+                ).finished.then(() => {
+                    card.classList.remove("is-leaving");
+                });
+            }));
         }
 
-        function playEnteringAnimation() {
-            if (
-                hasPlayedEnteringAnimation ||
-                !cards.length ||
-                sessionStorage.getItem("albumsCardsLeaving") !== "true"
-            ) {
-                document.documentElement.classList.remove("albums-is-returning");
-                return;
-            }
+        function animateIn(panel, direction = "right") {
+            const cards = Array.from(panel.querySelectorAll(".floating-thumb"));
+            const startX = direction === "left" ? "-120vw" : "120vw";
 
-            hasPlayedEnteringAnimation = true;
-            sessionStorage.removeItem("albumsCardsLeaving");
-
-            settings.forEach((setting, index) => {
+            return Promise.all(cards.map((card, index) => {
+                const flight = card.querySelector(".card-flight") || card;
                 const directionY = index % 2 === 0 ? -24 : 24;
-                const rotation = index % 2 === 0 ? -8 : 8;
-                const delay = index * 100;
+                const rotation = direction === "left"
+                    ? (index % 2 === 0 ? -8 : 8)
+                    : (index % 2 === 0 ? 8 : -8);
+                const delay = Math.min(index * 55, 450);
 
-                setting.isEntering = true;
-                setting.isLeaving = false;
+                card.classList.add("is-entering");
 
-                setting.card.classList.add("is-entering");
-                setting.card.classList.remove("is-leaving");
+                flight.style.opacity = "0";
+                flight.style.filter = "blur(2px)";
+                flight.style.transform = `translate3d(${startX}, ${directionY}px, 0) rotate(${rotation}deg)`;
 
-                const enterAnimation = setting.card.animate(
+                const animation = flight.animate(
                     [
                         {
-                            transform: `translate3d(-120vw, ${directionY}px, 0) rotate(${rotation}deg)`,
+                            transform: `translate3d(${startX}, ${directionY}px, 0) rotate(${rotation}deg)`,
                             opacity: 0,
                             filter: "blur(2px)",
                         },
@@ -161,108 +179,59 @@
                         },
                     ],
                     {
-                        duration: 1300,
+                        duration: 820,
                         delay,
                         easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-                        fill: "both",
+                        fill: "forwards",
                     }
                 );
 
-                enterAnimation.finished.then(() => {
-                    enterAnimation.cancel();
+                return animation.finished.then(() => {
+                    animation.cancel();
 
-                    setting.card.style.opacity = "";
-                    setting.card.style.filter = "";
-                    setting.card.style.transform = "";
+                    flight.style.opacity = "";
+                    flight.style.filter = "";
+                    flight.style.transform = "";
 
-                    setting.isEntering = false;
-                    setting.card.classList.remove("is-entering");
-
-                    revealCardContent(setting.card);
+                    card.classList.remove("is-entering");
                 });
-            });
-
-            requestAnimationFrame(() => {
-                document.documentElement.classList.remove("albums-is-returning");
-            });
+            }));
         }
 
-        cards.forEach((card) => {
-            const link = card.querySelector("a");
-
-            if (!link) {
+        async function switchPanel(nextPanelName) {
+            if (isSwitching || nextPanelName === activePanelName) {
                 return;
             }
 
-            link.addEventListener("click", (event) => {
-                if (isPageLeaving) {
-                    event.preventDefault();
-                    return;
-                }
+            const currentPanel = document.querySelector(`[data-gallery-panel="${activePanelName}"]`);
+            const nextPanel = document.querySelector(`[data-gallery-panel="${nextPanelName}"]`);
 
-                if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target === "_blank") {
-                    return;
-                }
-
-                event.preventDefault();
-                isPageLeaving = true;
-
-                const href = link.href;
-                sessionStorage.setItem("albumsCardsLeaving", "true");
-
-                const animations = settings.map((setting, index) => {
-                    const directionY = index % 2 === 0 ? -24 : 24;
-                    const rotation = index % 2 === 0 ? -8 : 8;
-                    const delay = index * 100;
-
-                    setting.card.dataset.contentRevealed = "false";
-
-                    setting.isLeaving = true;
-                    setting.card.classList.add("is-leaving");
-
-                    return setting.card.animate(
-                        [
-                            {
-                                transform: setting.card.style.transform || "translate3d(0, 0, 0)",
-                                opacity: 1,
-                                filter: "blur(0)",
-                            },
-                            {
-                                transform: `translate3d(-120vw, ${directionY}px, 0) rotate(${rotation}deg)`,
-                                opacity: 0,
-                                filter: "blur(2px)",
-                            },
-                        ],
-                        {
-                            duration: 3100,
-                            delay,
-                            easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-                            fill: "forwards",
-                        }
-                    ).finished;
-                });
-
-                Promise.all(animations).then(() => {
-                    window.location.href = href;
-                });
-            });
-        });
-
-        playEnteringAnimation();
-        requestAnimationFrame(animateFloatingCards);
-
-        window.addEventListener("pageshow", () => {
-            isPageLeaving = false;
-
-            settings.forEach((setting) => {
-                setting.isLeaving = false;
-                setting.card.classList.remove("is-leaving");
-            });
-
-            if (!hasPlayedEnteringAnimation) {
-                playEnteringAnimation();
+            if (!currentPanel || !nextPanel) {
+                return;
             }
+
+            const isReturningToMenu = nextPanelName === "menu";
+
+            isSwitching = true;
+
+            await animateOut(currentPanel, isReturningToMenu ? "right" : "left");
+
+            currentPanel.classList.remove("is-active");
+            nextPanel.classList.add("is-active");
+            activePanelName = nextPanelName;
+
+            await animateIn(nextPanel, isReturningToMenu ? "left" : "right");
+
+            isSwitching = false;
+        }
+
+        openButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+                switchPanel(button.dataset.openGallery);
+            });
         });
+
+        requestAnimationFrame(animateFloatingCards);
     });
 </script>
 </body>
