@@ -12,7 +12,7 @@
 
 {{ if .Site.Params.HugoFooter }}
 <p style="text-align: center">
-    Compiled with <a href="http://gohugo.io" class="font-bold text-blue-600 hover:underline">Hugo</a>,
+    Compiled with <a href="https://gohugo.io" class="font-bold text-blue-600 hover:underline">Hugo</a>,
     using the <a href="https://github.com/22decembre/Berenice" class="font-bold text-blue-600 hover:underline">Berenice theme</a>,
     by <a href="https://www.22decembre.eu/" class="font-bold text-blue-600 hover:underline">Stéphane 22Decembre</a>.
 </p>
@@ -20,12 +20,12 @@
 <br>
 {{ end }}
 
-<script src="{{ "lightgallery.min.js" | relURL }}"></script>
-<script src="{{ "lg-zoom.min.js" | relURL }}"></script>
+<script src="{{ `lightgallery.min.js` | relURL }}"></script>
+<script src="{{ `lg-zoom.min.js` | relURL }}"></script>
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        const panels = Array.from(document.querySelectorAll("[data-gallery-panel]"));
+        // const panels = Array.from(document.querySelectorAll("[data-gallery-panel]"));
         const openButtons = Array.from(document.querySelectorAll("[data-open-gallery]"));
         const lightboxContainers = Array.from(document.querySelectorAll(".gallery-lightbox"));
 
@@ -97,12 +97,8 @@
         function animateFloatingCards(time) {
             getActiveCards().forEach((card, index) => {
                 const state = ensureFloatingState(card, index);
-                const t = time * state.speed + state.phase;
 
-                const x = Math.sin(t) * state.amplitudeX;
-                const y = Math.sin(t * 2) * state.amplitudeY;
-
-                card.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+                card.style.transform = getFloatingTransform(state, time);
             });
 
             requestAnimationFrame(animateFloatingCards);
